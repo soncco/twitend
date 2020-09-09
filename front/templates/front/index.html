@@ -1,0 +1,77 @@
+{% extends 'front/base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="trends-container bg-white rounded border p-3">
+                    <h2>Tendencias de {{ location_data.nombre }} <span class="text-muted">({{ location_data.tz }})</span></h2>
+                    <ol class="trend-list">
+                    {% for trend in newdf %}
+                        <li>
+                            <span class="hashtag">{{ trend.hashtag }}</span>
+                            <br>
+                            {% if trend.tweets_counter > 0 %}
+                            <small class="text-muted">{{ trend.tweets_counter }} tweets</small> <br>
+                            {% else %}
+                            <small class="text-muted">Empezando la tendencia</small> <br>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="trends-settings bg-white rounded border p-3 mb-2">
+                    <h4>Lugares</h4>
+                    <ul>
+                        {% for place in places %}
+                            {% if when != '' %}
+                                <li><a href="{% url 'front:index' place.key when %}">{{ place.nombre }}</a></li>
+                            {% else %}
+                                <li><a href="{% url 'front:index' place.key %}">{{ place.nombre }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="trends-settings bg-white rounded border p-3 mb-2">
+                    <h4>Fecha</h4>
+                    <div class="form-group">
+                        <input type="text" class="form-control datepicker" value="{{ fecha|date:"d/m/Y" }}" />
+                        <input type="hidden" name="when" id="when" value="{{ fecha|date:"Y-m-d"}}" />
+                    </div>
+                </div>
+                <div class="trends-settings bg-white rounded border p-3">
+                    <h4>Hora</h4>
+                    
+                    {% for x in 'xxxxxxxxxxxxxxxxxxxxxxxx' %}
+                        <a href="{% url 'front:index' location fecha|date:"Y-m-d" forloop.counter0 %}" class="btn">{{ forloop.counter0 }}</a>
+                    {% endfor %}
+                        
+                </div>
+            </div>
+        </div>
+        
+    </div>
+        
+{% endblock content %}
+
+
+{% block js %}
+    <script>
+        $.datepicker.setDefaults( $.datepicker.regional[ "es" ] );
+        $('.datepicker').datepicker({
+            minDate: new Date(2020, 6, 15),
+            maxDate: new Date(),
+            altField: '#when',
+            altFormat: 'yy-mm-dd',
+            onSelect: function(d, x, y) {
+                location.href = '/{{ location }}/' + $('#when').val() + '/';
+            }
+        })
+    </script>
+{% endblock js %}
+
+{% block js_head %}
+
+{% endblock js_head %}
