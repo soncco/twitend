@@ -60,8 +60,8 @@ data/data/*
 data/*
 
 # TMP
-**/static/**/js/*
-**/static/**/css/*
+#**/static/**/js/*
+#**/static/**/css/*
 
 .env
 .vscode

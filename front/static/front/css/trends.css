@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap');
+:root {
+    --my-red: #E41A23;
+    --my-blue: #184070;
+    --my-sky: rgb(127, 159, 197);
+    --my-bg: #E9EEF4;
+}
+
+body {
+    font-family: 'Source Sans Pro', sans-serif;
+    background: var(--my-bg);
+}
+
+h1, h2, h3, h4, h5 {
+    color: var(--my-blue)
+}
+
+.navbar-brand {
+    color: var(--my-red) !important;
+}
+
+.nav-item.active .nav-link {
+    color: var(--my-blue) !important;
+}
+
+.nav-item .nav-link {
+    color: var(--my-sky) !important;
+}
+
+.bg-white {
+    background: white;
+}
+
+.trend-list li {
+    border-bottom: 1px solid #cdcacaee !important;
+    padding: .3rem 0
+}
+
+.trend-list .hashtag {
+    font-size: 1.1rem;
+}
