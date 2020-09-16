@@ -60,14 +60,17 @@ def index(request, location='Peru', when='', hour=-1):
         pass
     newdf = newdf.to_dict('records')
 
+    horas = list(range(0,23))
+
     context = {
         'newdf': newdf,
         'location': location,
         'when': when,
-        'fecha': fecha,
+        'fecha': arrow.get(fecha).datetime,
         'places': places(),
         'hour': hour,
-        'location_data': location_data
+        'location_data': location_data,
+        'horas': horas
     }
     return render(request, 'front/index.html', context)
 
@@ -104,12 +107,16 @@ def indexxx(request, location='Peru', when='', hour=-1):
         pass
     newdf = newdf.to_dict('records')
 
+    horas = list(range(0,23))
+    print(horas)
+
     context = {
         'newdf': newdf,
         'location': location,
         'when': when,
         'places': places(),
-        'fecha_set': fecha_set
+        'fecha_set': fecha_set,
+        'horas': horas
     }
     return render(request, 'front/index.html', context)
 

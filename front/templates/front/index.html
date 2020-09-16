@@ -24,12 +24,12 @@
             <div class="col-md-4">
                 <div class="trends-settings bg-white rounded border p-3 mb-2">
                     <h4>Lugares</h4>
-                    <ul>
+                    <ul class="places list-unstyled">
                         {% for place in places %}
                             {% if when != '' %}
-                                <li><a href="{% url 'front:index' place.key when %}">{{ place.nombre }}</a></li>
+                                <li class="border-bottom  p-1"><a href="{% url 'front:index' place.key when %}">{{ place.nombre }}</a></li>
                             {% else %}
-                                <li><a href="{% url 'front:index' place.key %}">{{ place.nombre }}</a></li>
+                                <li class="border-bottom  p-1"><a href="{% url 'front:index' place.key %}">{{ place.nombre }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ul>
@@ -43,15 +43,16 @@
                 </div>
                 <div class="trends-settings bg-white rounded border p-3">
                     <h4>Hora</h4>
-                    
-                    {% for x in 'xxxxxxxxxxxxxxxxxxxxxxxx' %}
-                        <a href="{% url 'front:index' location fecha|date:"Y-m-d" forloop.counter0 %}" class="btn">{{ forloop.counter0 }}</a>
+                    {% for hora in horas %}
+                        {% if hora == hour %}
+                            <a href="{% url 'front:index' location fecha|date:"Y-m-d" hora %}" class="btn btn-primary btn-hora">{{ hora }}</a>
+                        {% else %}
+                            <a href="{% url 'front:index' location fecha|date:"Y-m-d" hora %}" class="btn btn-light btn-hora">{{ hora }}</a>
+                        {% endif %}
                     {% endfor %}
-                        
                 </div>
             </div>
         </div>
-        
     </div>
         
 {% endblock content %}

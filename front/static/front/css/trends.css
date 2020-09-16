@@ -39,3 +39,11 @@ h1, h2, h3, h4, h5 {
 .trend-list .hashtag {
     font-size: 1.1rem;
 }
+
+.btn-hora {
+    margin-bottom: 4px;
+}
+
+.places a {
+    color: var(--my-red);
+}
