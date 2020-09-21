@@ -33,11 +33,22 @@ h1, h2, h3, h4, h5 {
 
 .trend-list li {
     border-bottom: 1px solid #cdcacaee !important;
-    padding: .3rem 0
+    padding: .3rem 0;
+    display: flex;
+    justify-content: space-between;
 }
 
 .trend-list .hashtag {
     font-size: 1.1rem;
+}
+
+.trend-stat {
+
+}
+
+.trend-stat .location {
+    margin-bottom: 0;
+    color: var(--my-sky);
 }
 
 .btn-hora {

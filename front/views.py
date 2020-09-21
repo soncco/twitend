@@ -2,8 +2,11 @@ from django.shortcuts import render
 from django_pandas.io import read_frame
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.db.models.functions import Lower
 
 from base.models import Trends
+
+from front.utils import change_col_name
 
 from utils.vars import places
 
@@ -36,12 +39,12 @@ def index(request, location='Peru', when='', hour=-1):
         else:
             utcnow = arrow.get('%s %s:0:0' % (when, hour+1), 'YYYY-MM-DD H:m:s')
             utcprev = utcnow.shift(hours=-1)
-        
+
     fecha = utcnow
     if hour == -1:
         utcnow = utcnow.shift(hours=location_data['shift'])
         utcprev = utcprev.shift(hours=location_data['shift'])
-        
+
 
     trends = Trends.objects.filter(
         location=location,
@@ -50,10 +53,13 @@ def index(request, location='Peru', when='', hour=-1):
     print(trends.query)
 
     df = read_frame(trends)
+    #df.to_csv('trends.csv')
+
     pv = pd.pivot_table(df, index='hashtag', values=['position', 'tweets_counter'],
         aggfunc={'position': np.average, 'tweets_counter': max})
     
     newdf = pd.DataFrame(pv.to_records())
+
     try:
         newdf = newdf.sort_values(by=['position'])
     except:
@@ -61,6 +67,8 @@ def index(request, location='Peru', when='', hour=-1):
     newdf = newdf.to_dict('records')
 
     horas = list(range(0,23))
+
+    q = request.GET.get('q', '')
 
     context = {
         'newdf': newdf,
@@ -70,53 +78,8 @@ def index(request, location='Peru', when='', hour=-1):
         'places': places(),
         'hour': hour,
         'location_data': location_data,
-        'horas': horas
-    }
-    return render(request, 'front/index.html', context)
-
-
-def indexxx(request, location='Peru', when='', hour=-1):
-    location_data = next(item for item in places() if item['key'] == location)
-    print(location_data)
-    fecha_set = False
-    if when == '':
-        when = datetime.datetime.now()
-        fecha2 = when - datetime.timedelta(hours=5)
-        fecha1 = when - datetime.timedelta(hours=6)
-    else:
-        fecha_set = True
-        when = datetime.datetime.strptime(when, '%Y-%m-%d')
-        if hour == -1:
-            hour = 5
-        fecha2 = when - datetime.timedelta(hours=hour)
-        fecha1 = when - datetime.timedelta(hours=hour+1)
-
-    trends = Trends.objects.filter(
-        location=location,
-        trend_date__range=[fecha1, fecha2]
-    )
-
-    df = read_frame(trends)
-    pv = pd.pivot_table(df, index='hashtag', values=['position', 'tweets_counter'],
-        aggfunc={'position': np.average, 'tweets_counter': max})
-    
-    newdf = pd.DataFrame(pv.to_records())
-    try:
-        newdf = newdf.sort_values(by=['position'])
-    except:
-        pass
-    newdf = newdf.to_dict('records')
-
-    horas = list(range(0,23))
-    print(horas)
-
-    context = {
-        'newdf': newdf,
-        'location': location,
-        'when': when,
-        'places': places(),
-        'fecha_set': fecha_set,
-        'horas': horas
+        'horas': horas,
+        'q': q
     }
     return render(request, 'front/index.html', context)
 
@@ -135,3 +98,33 @@ def trend_stats(request, hashtag, location, date, hour):
     newdf = pd.DataFrame(pvchart.to_records())
 
     return HttpResponse(newdf.to_json(), content_type='application/json')
+
+def search(request):
+    q = request.GET.get('q', '')
+    q = q.strip()
+
+    trends = Trends.objects.filter(hashtag__icontains=q)
+
+    df = read_frame(trends)
+    df['trend_date'] = df['trend_date'].map(lambda f: arrow.get(f).date())
+
+    pv = pd.pivot_table(df, index=['hashtag', 'location'], values='tweets_counter',
+        aggfunc=[np.average, 'count'])
+    newdf = pd.DataFrame(pv.to_records())
+    newdf.reset_index()
+    newdf.fillna(0)
+    new_cols = newdf.columns.values
+    new_cols = [change_col_name(a) for a in new_cols]
+    newdf.columns = new_cols
+    newdf.to_csv('test.csv', index=False)
+
+    context = {
+        'newdf': newdf.to_dict('records'),
+        'q': q
+    }
+    return render(request, 'front/search.html', context)
+
+def trend(request):
+    trends = Trends.objects.filter(hashtag=hashtag)
+    df = read_frame(trends)
+    pv = pd.pivot_table(df, index=['hashtag', 'location'], columns='trend_date', values='tweets_counter', aggfunc=np.average)

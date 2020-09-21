@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/redmond/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
     <link rel="stylesheet" href="{% static 'front/css/trends.css' %}">
     {% block js_head %}
     {% endblock js_head %}
-    <title>Tendencias de {{ location_data.nombre }} - Tendencias de Twitter en español - Twitnd</title>
+    <title>{% block title %}{% endblock %} - Tendencias de Twitter en español - Twitnd</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light mb-4" style="background-color: #fff;">
@@ -22,8 +23,8 @@
             <ul class="navbar-nav mr-auto">
                 
             </ul>
-            <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="" aria-label="">
+            <form class="form-inline my-2 my-lg-0" action="{% url 'front:search' %}">
+                <input class="form-control mr-sm-2" type="search" name="q" value="{{q}}">
                 <button class="btn btn-primary my-2 my-sm-0" type="submit">Buscar</button>
             </form>
         </div>
