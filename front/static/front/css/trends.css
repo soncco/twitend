@@ -4,11 +4,16 @@
     --my-blue: #184070;
     --my-sky: rgb(127, 159, 197);
     --my-bg: #E9EEF4;
+    --tw: #1da1f2
 }
 
 body {
     font-family: 'Source Sans Pro', sans-serif;
     background: var(--my-bg);
+}
+
+a {
+    color: var(--my-blue)
 }
 
 h1, h2, h3, h4, h5 {
@@ -42,6 +47,10 @@ h1, h2, h3, h4, h5 {
     font-size: 1.1rem;
 }
 
+.trend-links a {
+    color: var(--tw);
+}
+
 .trend-stat {
 
 }
@@ -49,6 +58,14 @@ h1, h2, h3, h4, h5 {
 .trend-stat .location {
     margin-bottom: 0;
     color: var(--my-sky);
+}
+
+.trend-stat .hashtag {
+    margin-bottom: 0;
+}
+
+.trend-stat .numbers {
+    font-size: 90%;
 }
 
 .btn-hora {

@@ -1,0 +1,93 @@
+{% extends 'front/base.html' %}
+{% load mis_tags %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="trends-container bg-white rounded border p-3">
+                    <h2>{{ hashtag }}</h2>
+                    <ol class="list-unstyled trend-stat">
+                    {% for n in newdf %}
+                        <li class="mb-3">
+                            <p class="location"><i class="fas fa-map-marker-alt"></i> {{ n.location }}</p>
+                            <canvas id="chart{{ forloop.counter0 }}"></canvas>
+                        </li>
+                    {% endfor %}
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-4">
+                
+            </div>
+        </div>
+    </div>
+        
+{% endblock content %}
+
+{% block title %}{{ hashtag }}{% endblock title %}
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/moment.min.js" integrity="sha512-Izh34nqeeR7/nwthfeE0SI3c8uhFSnqxV0sI9TvTcXiFJkMd6fB644O64BRq2P/LA/+7eRvCw4GmLsXksyTHBg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.0/locale/es.min.js" integrity="sha512-L6Trpj0Q/FiqDMOD0FQ0dCzE0qYT2TFpxkIpXRSWlyPvaLNkGEMRuXoz6MC5PrtcbXtgDLAAI4VFtPvfYZXEtg==" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+    var nan = null;
+    function getRandomColor() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    var l = function(d) {
+        var entries = Object.entries(d);
+        var labels = [];
+        for(var item in entries) {
+            if(item > 1) {
+                if(entries[item][1] != nan)
+                    labels.push(moment(entries[item][0]).format('L'))
+            }
+        }
+        return labels;
+    }
+    var gd = function(d) {
+        var entries = Object.entries(d);
+        var data = [];
+        for(var item in entries) {
+            if(item > 1) {
+                if(entries[item][1] != nan)
+                    data.push(entries[item][1].toFixed(2))
+            }
+        }
+        return data;
+    }
+</script>
+<script>
+    {% for n in newdf %}
+    var color = getRandomColor()
+    var ctx{{ forloop.counter0 }} = document.getElementById('chart{{ forloop.counter0 }}').getContext('2d');
+    var it = {{n|safe}};
+    var labels = l(it);
+    var myLineChart{{ forloop.counter0 }} = new Chart(ctx{{ forloop.counter0 }}, {
+        type: (labels.length > 1) ? 'line' : 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Promedio de Tweets',
+                data: gd(it),
+                backgroundColor: color + '44',
+                borderColor: color,
+            }]
+            
+        },
+        options: {
+            
+        }
+    });
+    {% endfor %}
+</script>
+{% endblock js %}
+    

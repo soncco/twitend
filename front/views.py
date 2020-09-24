@@ -1,8 +1,9 @@
 from django.shortcuts import render
-from django_pandas.io import read_frame
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.db.models.functions import Lower
+
+from django_pandas.io import read_frame
 
 from base.models import Trends
 
@@ -12,13 +13,9 @@ from utils.vars import places
 
 from urllib.parse import unquote
 
-from matplotlib.backends.backend_agg import FigureCanvasAgg
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import datetime
-import json
-import io
 import arrow
 
 def index(request, location='Peru', when='', hour=-1):
@@ -116,7 +113,7 @@ def search(request):
     new_cols = newdf.columns.values
     new_cols = [change_col_name(a) for a in new_cols]
     newdf.columns = new_cols
-    newdf.to_csv('test.csv', index=False)
+    #newdf.to_csv('test.csv', index=False)
 
     context = {
         'newdf': newdf.to_dict('records'),
@@ -124,7 +121,24 @@ def search(request):
     }
     return render(request, 'front/search.html', context)
 
-def trend(request):
+def trend(request, hashtag):
+    q = request.GET.get('q', '')
+    q = q.strip()
+
     trends = Trends.objects.filter(hashtag=hashtag)
     df = read_frame(trends)
+    df['trend_date'] = df['trend_date'].map(lambda f: arrow.get(f).date())
     pv = pd.pivot_table(df, index=['hashtag', 'location'], columns='trend_date', values='tweets_counter', aggfunc=np.average)
+
+    newdf = pd.DataFrame(pv.to_records())
+    newdf.reset_index()
+    newdf.fillna(0)
+
+    context = {
+        'hashtag': hashtag,
+        'newdf': newdf.to_dict('records'),
+        'q': q
+    }
+
+    newdf.to_csv('hashtag.csv', index=False)
+    return render(request, 'front/trend.html', context)

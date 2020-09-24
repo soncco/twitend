@@ -11,7 +11,7 @@
                     {% for trend in newdf %}
                         <li>
                             <div class="trend-info">
-                                <a class="hashtag" href="#">{{ trend.hashtag }}</a>
+                                <a class="hashtag" href="{% url 'front:trend' trend.hashtag %}">{{ trend.hashtag }}</a>
                                 <br>
                                 {% if trend.tweets_counter > 0 %}
                                 <small class="text-muted">{{ trend.tweets_counter }} tweets</small> <br>

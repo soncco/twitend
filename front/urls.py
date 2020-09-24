@@ -7,6 +7,7 @@ from front import views
 app_name = 'front'
 urlpatterns = [
     path('search/', views.search, name='search'),
+    path('trend/<str:hashtag>', views.trend, name='trend'),
     path('', views.index, name='index'),
     path('<str:location>/', views.index, name='index'),
     path('<str:location>/<str:when>/', views.index, name='index'),

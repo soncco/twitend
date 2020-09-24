@@ -7,11 +7,12 @@
             <div class="col-md-8">
                 <div class="trends-container bg-white rounded border p-3">
                     <h2>Resultados de búsqueda</h2>
+                    <p>Se muestran {{ newdf|length }} resultados en total.</p>
                     {% for trend in newdf %}
                         <section class="trend-stat">
                             <p class="location"><i class="fas fa-map-marker-alt"></i> {{ trend.location }}</p>
-                            <h4 class="hashtag"><a href="#">{{ trend.hashtag }}</a></h4>
-                            <p class="numbers">
+                            <h4 class="hashtag"><a href="{% url 'front:trend' trend.hashtag %}">{{ trend.hashtag }}</a></h4>
+                            <p class="numbers text-muted">
                                 Aparece {{ trend.count }} veces
                                 {% if trend.average > 0 %}
                                 en promedio {{ trend.average|floatformat:"0" }} tweets.
