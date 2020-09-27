@@ -123,11 +123,12 @@ def search(request):
 
 def trend(request, hashtag):
     q = request.GET.get('q', '')
-    q = q.strip()
 
     trends = Trends.objects.filter(hashtag=hashtag)
     df = read_frame(trends)
+    first = df['hashtag'][0]
     df['trend_date'] = df['trend_date'].map(lambda f: arrow.get(f).date())
+    df['hashtag'] = df['hashtag'].map(lambda h: first)
     pv = pd.pivot_table(df, index=['hashtag', 'location'], columns='trend_date', values='tweets_counter', aggfunc=np.average)
 
     newdf = pd.DataFrame(pv.to_records())
