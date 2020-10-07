@@ -18,7 +18,40 @@
                 </div>
             </div>
             <div class="col-md-4">
-                
+                <div class="trends-settings bg-white rounded border p-3 mb-2">
+                    <h4>¿Cómo interpretar el gráfico?</h4>
+                    <p>
+                        Twitnd sólo muestra en el gráfico las fechas donde el hashtag ha sido tendencia.
+                        Se agrupa cuántas veces el hashtag ha sido tendencia en el día, se toman el número de tweets y se saca un promedio el cual se muestra en el gráfico.
+                    </p>
+                    <p>
+                        También agrupa los términos de manera "case insensitive", es decir, "vizcarra", "Vizcarra" o "VIZCARRA" serán agrupados y se mostrarán en este gráfico.
+                    </p>
+                    <p>
+                        En algunos casos el promedio de Tweets es 0, esto es porque Tweetdeck no muestra el número de Tweets cuando algun hashtag recién está empezando a difundirse.
+                    </p>
+                </div>
+                <div class="trends-settings bg-white rounded border p-3 mb-2">
+                    <h4>Tendencias en español ahora</h4>
+                    <ol class="trend-list">
+                        {% for trend in globales %}
+                            <li>
+                                <div class="trend-info">
+                                    <a class="hashtag" href="{% url 'front:trend' trend.hashtag %}">{{ trend.hashtag }}</a>
+                                    <br>
+                                    {% if trend.tweets_counter > 0 %}
+                                    <small class="text-muted">{{ trend.tweets_counter }} tweets</small> <br>
+                                    {% else %}
+                                    <small class="text-muted">Empezando la tendencia</small> <br>
+                                    {% endif %}
+                                </div>
+                                <div class="trend-links">
+                                    <a href="https://twitter.com/search?q={{ trend.hashtag|clean_hashtag }}" target="_blank"><i class="fab fa-twitter    "></i> Ver en Twitter</a>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ol>
+                </div>
             </div>
         </div>
     </div>

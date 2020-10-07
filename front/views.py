@@ -7,7 +7,7 @@ from django_pandas.io import read_frame
 
 from base.models import Trends
 
-from front.utils import change_col_name
+from front.utils import change_col_name, get_globales
 
 from utils.vars import places
 
@@ -80,22 +80,6 @@ def index(request, location='Peru', when='', hour=-1):
     }
     return render(request, 'front/index.html', context)
 
-def trend_stats(request, hashtag, location, date, hour):
-    hour = datetime.datetime.strptime('%s %s:00:00' % (date, hour), '%Y-%m-%d %H:%M:%S')
-
-    doce = hour - datetime.timedelta(hours=12)
-    trend = Trends.objects.filter(
-        location=location,
-        hashtag=unquote(hashtag),
-        trend_date__range=(doce, hour)
-    )
-
-    df = read_frame(trend)
-    pvchart = pd.pivot_table(df, index='trend_date', columns='hashtag', values='tweets_counter', aggfunc=np.sum)
-    newdf = pd.DataFrame(pvchart.to_records())
-
-    return HttpResponse(newdf.to_json(), content_type='application/json')
-
 def search(request):
     q = request.GET.get('q', '')
     q = q.strip()
@@ -135,7 +119,10 @@ def trend(request, hashtag):
     newdf.reset_index()
     newdf.fillna(0)
 
+    globales = get_globales()
+
     context = {
+        'globales': globales,
         'hashtag': hashtag,
         'newdf': newdf.to_dict('records'),
         'q': q
@@ -143,3 +130,8 @@ def trend(request, hashtag):
 
     newdf.to_csv('hashtag.csv', index=False)
     return render(request, 'front/trend.html', context)
+
+
+def acerca(request):
+    
+    return render(request, 'front/acerca.html')

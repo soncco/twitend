@@ -6,6 +6,7 @@ from front import views
 
 app_name = 'front'
 urlpatterns = [
+    path('acerca/', views.acerca, name='acerca'),
     path('search/', views.search, name='search'),
     path('trend/<str:hashtag>', views.trend, name='trend'),
     path('', views.index, name='index'),

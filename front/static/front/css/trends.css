@@ -43,6 +43,10 @@ h1, h2, h3, h4, h5 {
     justify-content: space-between;
 }
 
+.col-md-4 .trend-list li {
+    display: block !important;
+}
+
 @media(max-width: 768px) {
     .trend-list li {
         display: block;
@@ -80,4 +84,9 @@ h1, h2, h3, h4, h5 {
 
 .places a {
     color: var(--my-red);
+}
+
+.acerca h3 {
+    color: var(--my-red) !important;
+    font-size: 120%;
 }
