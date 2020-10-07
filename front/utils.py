@@ -16,7 +16,8 @@ def get_globales():
     utcnow = arrow.utcnow()
     utcprev = utcnow.shift(hours=-1)
 
-    fecha = utcnow
+    utcnow.shift(hours=-5)
+    utcprev.shift(hours=-5)
 
     trends = Trends.objects.filter(
         trend_date__range=[utcprev.datetime, utcnow.datetime]
